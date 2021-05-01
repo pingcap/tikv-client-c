@@ -25,12 +25,13 @@ struct Store
     const uint64_t id;
     const std::string addr;
     const std::string peer_addr;
+    const uint64_t state;
     const std::map<std::string, std::string> labels;
     const StoreType store_type;
 
-    Store(uint64_t id_, const std::string & addr_, const std::string & peer_addr_, const std::map<std::string, std::string> & labels_,
-        StoreType store_type_)
-        : id(id_), addr(addr_), peer_addr(peer_addr_), labels(labels_), store_type(store_type_)
+    Store(uint64_t id_, const std::string & addr_, const std::string & peer_addr_, uint64_t state_,
+        const std::map<std::string, std::string> & labels_, StoreType store_type_)
+        : id(id_), addr(addr_), peer_addr(peer_addr_), state(state_), labels(labels_), store_type(store_type_)
     {}
 };
 
@@ -161,7 +162,7 @@ public:
 
     RegionPtr getRegionByID(Backoffer & bo, const RegionVerID & id);
 
-    Store getStore(Backoffer & bo, uint64_t id);
+    std::optional<Store> getStore(Backoffer & bo, uint64_t id);
 
     std::pair<std::unordered_map<RegionVerID, std::vector<std::string>>, RegionVerID> groupKeysByRegion(
         Backoffer & bo, const std::vector<std::string> & keys);
@@ -173,9 +174,9 @@ private:
 
     RegionPtr loadRegionByID(Backoffer & bo, uint64_t region_id);
 
-    metapb::Store loadStore(Backoffer & bo, uint64_t id);
+    std::optional<metapb::Store> loadStore(Backoffer & bo, uint64_t id);
 
-    Store reloadStore(Backoffer & bo, uint64_t id);
+    std::optional<Store> reloadStore(Backoffer & bo, uint64_t id);
 
     RegionPtr searchCachedRegion(const std::string & key);
 

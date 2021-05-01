@@ -323,7 +323,7 @@ std::pair<metapb::Region, metapb::Peer> Client::getRegionByID(uint64_t region_id
     return std::make_pair(response.region(), response.leader());
 }
 
-metapb::Store Client::getStore(uint64_t store_id)
+std::optional<metapb::Store> Client::getStore(uint64_t store_id)
 {
     pdpb::GetStoreRequest request{};
     pdpb::GetStoreResponse response{};
